@@ -5,7 +5,8 @@ and pops up an alert for each message received.
 
 ![](screenshot.png)
 
-Good for building simple monitoring systems.
+Good for building simple monitoring systems. See e.g.
+[examples/check_jobs.py](examples/check_jobs.py).
 
 ## Installation
 
