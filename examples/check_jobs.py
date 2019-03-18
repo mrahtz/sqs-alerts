@@ -14,17 +14,16 @@ in the current directory.
 """
 
 import argparse
+import errno
 import glob
 import json
 import os
+import signal
 import subprocess
 import uuid
+from functools import wraps
 from pathlib import Path
 from socket import gethostname
-from functools import wraps
-import errno
-import os
-import signal
 
 import requests
 
@@ -34,7 +33,8 @@ queue_url = "https://sqs.us-west-2.amazonaws.com/109526153624/alerts.fifo"
 # Log file strings which cause us to cause us to consider a local job broken
 include = ['exception', 'error', 'Error']
 # But if we see a line like "Exception: HTTPError", then it's OK; don't consider the job broken
-exclude = ['ALSA', 'Exception while trying to read metadata', 'INTERNAL SERVER ERROR', 'HTTPError', 'handle_user_exception']
+exclude = ['ALSA', 'Exception while trying to read metadata', 'INTERNAL SERVER ERROR', 'HTTPError',
+           'handle_user_exception']
 
 
 def send_alert(text):
@@ -50,8 +50,10 @@ def mark_as_broken(state_path, run_name):
     with open(state_path, 'a') as f:
         f.write(run_name + '\n')
 
+
 class TimeoutError(Exception):
     pass
+
 
 def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
     def decorator(func):
@@ -71,6 +73,7 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
 
     return decorator
 
+
 def contains_error_lines(log_file):
     with open(log_file, 'r') as f:
         lines = f.readlines()
@@ -78,6 +81,7 @@ def contains_error_lines(log_file):
         if any([p in line for p in include]) and not any([p in line for p in exclude]):
             return True
     return False
+
 
 def check_logs(dirs, state_path, already_broken_runs):
     for run_dir in dirs:
@@ -103,6 +107,7 @@ def check_jobs(state_path, already_broken_runs):
             continue
         mark_as_broken(state_path, job['jobId'])
         send_alert(f"AWS run {job['jobName']} ({job['jobId']}) failed")
+
 
 @timeout(seconds=10)
 def main():
