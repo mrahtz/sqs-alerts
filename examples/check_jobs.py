@@ -31,10 +31,9 @@ import requests
 queue_url = "https://sqs.us-west-2.amazonaws.com/109526153624/alerts.fifo"
 
 # Log file strings which cause us to cause us to consider a local job broken
-include = ['exception', 'error', 'Error']
-# But if we see a line like "Exception: HTTPError", then it's OK; don't consider the job broken
-exclude = ['ALSA', 'Exception while trying to read metadata', 'INTERNAL SERVER ERROR', 'HTTPError',
-           'handle_user_exception']
+include = ['exception', 'Exception', 'error', 'Error']
+# But if we see a line in this list, then it's OK; don't consider the job broken
+exclude = []
 
 
 def send_alert(text):
