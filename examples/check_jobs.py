@@ -25,10 +25,10 @@ from functools import wraps
 from pathlib import Path
 from socket import gethostname
 
-import requests
+import boto3
 
 # AWS SQS URL
-queue_url = "https://sqs.us-west-2.amazonaws.com/109526153624/alerts.fifo"
+QUEUE_URL = "FILLME"
 
 # Log file strings which cause us to cause us to consider a local job broken
 include = ['exception', 'error', 'Error']
@@ -36,14 +36,14 @@ include = ['exception', 'error', 'Error']
 exclude = ['ALSA', 'Exception while trying to read metadata', 'INTERNAL SERVER ERROR', 'HTTPError',
            'handle_user_exception']
 
+session = boto3.Session(profile_name='sqs_alerts')
+sqs = session.client('sqs')
+
 
 def send_alert(text):
-    global data
-    data = {'Action': 'SendMessage',
-            'MessageBody': text,
-            'MessageGroupId': '0',
-            'MessageDeduplicationId': str(int(uuid.uuid4()))}
-    requests.post(queue_url, data=data).raise_for_status()
+    global sqs
+    sqs.send_message(QueueUrl=QUEUE_URL, MessageBody=text, MessageGroupId='0',
+                     MessageDeduplicationId=str(int(uuid.uuid4())))
 
 
 def mark_as_broken(state_path, run_name):

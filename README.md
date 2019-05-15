@@ -11,8 +11,8 @@ Good for building simple monitoring systems. See e.g.
 ## Installation
 
 * Set up an SQS queue.
-* Install Boto (`pip install boto3`) and [configure AWS credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html).
-* Edit `QUEUE_NAME` in `alerts_from_sqs.py`, then install the script
+* Install Boto (`pip install boto3`) and [configure AWS credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html) under a profile `sqs_alerts`.
+* Edit `QUEUE_URL` in `alerts_from_sqs.py`, then install the script
  somewhere permanent on your filesystem (e.g. `~/.local/bin`).
 * Edit `INSTALLPATH` in `alerts_from_sqs.plist` to specify where you installed it.
 Then set the script to load on boot with 
@@ -21,5 +21,5 @@ Then set the script to load on boot with
 Test by sending a message manually with something like:
 
 ```
-$ curl -d "Action=SendMessage&MessageBody=Foo&MessageGroupId=m0&MessageDeduplicationId=100" QUEUE_URL
+$ aws --profile sqs_alerts sqs send-message --queue-url https://sqs.us-west-2.amazonaws.com/469197347721/alerts.fifo --message-body test --message-group-id 0 --message-deduplication-id 0
 ```
