@@ -21,5 +21,5 @@ Then set the script to load on boot with
 Test by sending a message manually with something like:
 
 ```
-$ aws --profile sqs_alerts sqs send-message --queue-url https://sqs.us-west-2.amazonaws.com/469197347721/alerts.fifo --message-body test --message-group-id 0 --message-deduplication-id 0
+$ aws --profile sqs_alerts sqs send-message --queue-url QUEUE_URL --message-body test --message-group-id 0 --message-deduplication-id 0
 ```
