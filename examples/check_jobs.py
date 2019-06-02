@@ -85,7 +85,7 @@ def contains_error_lines(log_file):
 def check_logs(dirs, state_path, already_broken_runs):
     for run_dir in dirs:
         run_name = Path(run_dir).parts[-1]
-        if run_name in already_broken_runs:
+        if run_name in already_broken_runs or '-test-' in run_name:
             continue
 
         broken = False
