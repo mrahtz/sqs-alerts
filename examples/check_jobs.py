@@ -33,7 +33,7 @@ QUEUE_URL = "FILLME"
 # Log file strings which cause us to cause us to consider a local job broken
 include = ['exception', 'Exception', 'error', 'Error']
 # But if we see a line in this list, then it's OK; don't consider the job broken
-exclude = ['concatenating videos to', 'AttributeError: _cache']
+exclude = ['concatenating videos to', 'AttributeError: _cache', 'wandb:']
 
 session = boto3.Session(profile_name='sqs_alerts')
 sqs = session.client('sqs')
